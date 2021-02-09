@@ -16,6 +16,19 @@
         border-radius: 4px;
 
         color: $black;
+
+        transition: .2s all;
+
+        -webkit-box-shadow: 2px 2px 5px 0px #ccc;
+        -moz-box-shadow: 2px 2px 5px 0px  #ccc;
+        box-shadow: 2px 2px 5px 0px  #ccc;
+
+        &:hover {
+          transform: translateY(1px);
+          -webkit-box-shadow: none;
+          -moz-box-shadow: none;
+          box-shadow: none;
+        }
     }
 </style>
 
