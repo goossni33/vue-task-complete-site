@@ -1,0 +1,14 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+body, input, select {
+    font-family: 'Roboto', 'SNFS', 'Segoe UI', Verdana, sans;
+}
+
+h1 {
+    color: $primary;
+    text-transform: uppercase;
+}
+
+h2 {
+    text-transform: uppercase;
+}
