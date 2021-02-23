@@ -3,14 +3,22 @@
 		<BackButton/>
 		<h1>Upload Foto</h1>
 		<h2>Voeg nieuwe foto toe voor</h2>
-		<select>
+		<select v-model="selectedParticipantId">
 			<option 
 				v-for="(participant) in participants" 
 				:key="participant.id" 
 				:value="participant.id"
 			>{{participant.naam}}</option>
 		</select>
-		<vue-dropzone ref="myVueDropzone" id="dropzone" :options="dropzoneOptions"></vue-dropzone>
+		<p class="error" v-if="errorMessage">{{errorMessage}}</p>
+		<vue-dropzone 
+			ref="myVueDropzone" 
+			id="dropzone" 
+			:options="dropzoneOptions" 
+			v-on:vdropzone-sending="sendingEvent" 
+			v-on:vdropzone-error="onError"
+			v-on:vdropzone-success="onSuccess"
+		/>
 	</div>
 </template>
 
@@ -30,6 +38,11 @@
 				font-size: $unit_l;
 			}
 		}
+
+		p.error {
+			margin-top: $unit_s;
+			color: red;
+		}
 	}
 </style>
 
@@ -47,11 +60,13 @@ export default {
 	data() {
 		return {
 			participants: [],
+			selectedParticipantId: null,
+			errorMessage: '',
 			dropzoneOptions: {
-				url: 'https://httpbin.org/post',
+				url: 'http://dump.lwdev.nl/vue-cursus-api/uploadFoto/upload.php',
 				thumbnailWidth: 150,
 				maxFilesize: 0.5,
-				headers: { "My-Awesome-Header": "header value" }
+				acceptedFiles: 'image/jpg, image/png, image/jpeg'
 			}
 		}
 	},
@@ -59,8 +74,21 @@ export default {
 		getParticipants() {
 			this.axios.get('http://dump.lwdev.nl/vue-cursus-api/deelnemers/').then((response) => {
 				this.participants = response.data;
-				console.log(this.participants[0])
-			})
+				this.selectedParticipantId = response.data[0].id;
+			});
+		},
+		sendingEvent(file, xhr, formData) {
+			formData.append('id', this.selectedParticipantId);
+		},
+		onError(file, message, xhr) {
+			this.errorMessage = message;
+		},
+		onSuccess(file, response) {
+			this.errorMessage = '';
+			
+			if(response.success) {
+				alert('Uploaden geslaagd!')
+			}
 		}
 	},
 	created() {
